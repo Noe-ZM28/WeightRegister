@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Registro de Salidas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="form-card">
+
+            <h1>Registro de Salidas</h1>
+
+            <form method="post">
+
+                <label for="id_salida">ID de Movimiento:</label><br>
+                <input type="text" id="id_salida" name="id_salida" required><br><br>
+
+                <label for="id_empleado">
+                    Nombre de Empleado:
+                </label>
+
+                <select id="id_empleado" name="id_empleado" required>
+
+                    <option value="">
+                        Seleccione un empleado
+                    </option>
+
+                    {% for conductor in conductores %}
+                    <option value="{{ conductor.id_empleado }}">
+                        {{ conductor.nombre }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+                <label for="id_camion">
+                    Placa de Camión:
+                </label>
+
+                <select id="id_camion" name="id_camion" required>
+
+                    <option value="">
+                        Seleccione un camión
+                    </option>
+
+                    {% for camion in camiones %}
+                    <option value="{{ camion.id_camion }}">
+                        {{ camion.placa_camion }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+                <label for="peso">Peso (Tons):</label><br>
+                <input type="number" id="peso" name="peso" step="0.01" required><br><br>
+
+
+
+                <button type="submit">Registrar Salida</button>
+
+            </form>
+
+            {% if mensaje %}
+            <div class="mensaje">
+                {{ mensaje }}
+            </div>
+            {% endif %}
+
+            <br>
+            <a href="/" class="home-button">
+                Volver al inicio
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

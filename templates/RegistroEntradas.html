@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Registro de Entradas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="form-card">
+
+            <h1>Registro de Entradas</h1>
+
+            <form method="post">
+
+                <label for="id_salida">Movimiento:</label><br>
+
+                <select id="id_salida" name="id_salida" onchange="buscarSalida()" required>
+
+                    <option value="">
+                        Seleccione un movimiento
+                    </option>
+
+                    {% for movimiento in movimientos %}
+                    <option value="{{ movimiento.id_movimiento }}">
+                        ID {{ movimiento.id_movimiento }}
+                        - {{ movimiento.conductor.nombre }}
+                        - {{ movimiento.camion.placa_camion }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+                <br><br>
+
+                <label for="peso_llegada">Peso de Llegada:</label><br>
+                <input type="number" id="peso_llegada" name="peso_llegada" required><br><br>
+
+                <label>Nombre de Empleado:</label><br>
+                <input type="text" id="nombre_empleado" readonly><br><br>
+
+                <label>Placa de Camión:</label><br>
+                <input type="text" id="placa_camion" readonly><br><br>
+
+                <label>Peso de Salida:</label><br>
+                <input type="number" id="peso" readonly><br><br>
+
+                <label>Discrepancia:</label><br>
+                <input type="number" id="discrepancia" readonly><br><br>
+
+                <div class="actions">
+                    <button type="submit">
+                        Registrar Entrada
+                    </button>
+                </div>
+
+            </form>
+
+            {% if mensaje %}
+            <div class="mensaje">
+                {{ mensaje }}
+            </div>
+            {% endif %}
+
+            <br>
+            <a href="/" class="home-button">
+                Volver al inicio
+            </a>
+
+            <script>
+                async function buscarSalida() {
+
+                    const id = document.getElementById("id_salida").value;
+
+                    if (!id)
+                        return;
+
+                    const response = await fetch(`/BuscarSalida/${id}`);
+
+                    if (!response.ok) {
+                        alert("No se encontró la salida");
+                        return;
+                    }
+
+                    const data = await response.json();
+
+                    document.getElementById("nombre_empleado").value =
+                        data.nombre_empleado;
+
+                    document.getElementById("placa_camion").value =
+                        data.placa_camion;
+
+                    document.getElementById("peso").value =
+                        data.peso_carga;
+
+                    calcularDiscrepancia();
+                }
+
+                function calcularDiscrepancia() {
+
+                    let pesoSalida =
+                        parseFloat(document.getElementById("peso").value) || 0;
+
+                    let pesoLlegada =
+                        parseFloat(document.getElementById("peso_llegada").value) || 0;
+
+                    let discrepancia = pesoSalida - pesoLlegada;
+
+                    document.getElementById("discrepancia").value =
+                        discrepancia.toFixed(2);
+                }
+
+                document
+                    .getElementById("peso_llegada")
+                    .addEventListener("input", calcularDiscrepancia);
+
+            </script>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
